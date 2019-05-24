@@ -37,12 +37,19 @@ class JishoRequester {
             curl_global_cleanup();
         }
 
-        void operator() (icu::UnicodeString kanji);
+        std::string operator() (icu::UnicodeString kanji);
 
     private:
-        static size_t write_data(void *ptr, size_t size, size_t nmemb, void *userp) {
-            FILE *f = (FILE*)userp;
-            return fwrite(ptr, size, nmemb, f);
+        static size_t write_data(void *contents, size_t size, size_t nmemb, void *userp) {
+            try {
+                ((std::string*)userp)->append((char*)contents, size * nmemb);
+            } catch (const std::length_error &e ) {
+                return 0;
+            } catch(const std::bad_alloc &e) {
+
+                return 0;
+            }
+            return size * nmemb;
         }
 
 
