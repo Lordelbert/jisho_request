@@ -1,6 +1,8 @@
 SRC= ${wildcard  src/*.cpp}
 EXE=jishoRequest
-CXXFLAGS+=-Wall -Wextra -g -O1 -std=c++14
+
+CXX=clang++
+CXXFLAGS+=-Wall -Wextra -g -O1 -std=c++17 -march=native
 INCLUDE+= -I/usr/include/unicode
 LDFLAGS= -lcurl -licuio -licui18n -licuuc -licudata
 

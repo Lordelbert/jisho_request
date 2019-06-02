@@ -15,7 +15,7 @@ int main () {
     std::cin >> test;
 
     std::string jsonString{jr(std::move(test))};
-    std::cout << jsonString;
+    //std::cout << jsonString;
     jh.parse(jsonString);
     return 0;
 }

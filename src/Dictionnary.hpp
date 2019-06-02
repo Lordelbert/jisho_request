@@ -3,33 +3,36 @@
 #include <unistr.h>
 #include <string>
 #include <vector>
-class Dictionnary {
-    using unicodeVector_t = std::vector<icu::UnicodeString>;
-    private:
-        class Word {
-            icu::UnicodeString m_kanji; // Word
-            unicodevector m_hiragana; // reading
-            std::vector<std::string> m_engSense;
-            int m_jlpt;
-            bool operator< (Word rhs) {
-                return this.jlpt < rhs.jlpt;
-            }
-            Word(icu::UnicodeString kanji,unicodeVector_t hiragana
-                 std::vector<std::string> sense,jlpt)
-                : m_kanji(std::move(kanji)), m_hiragana(std::move(hiragana)),
-                  m_engSense(std::move(sense)), m_jlpt(jlpt) {}
-        }
+#include <utility>
+#include <queue>
 
-        std::priority_queue<Word> m_commonQueue;
-        std::priority_queue<Word> m_unCommonQueue;
-        std::vector<Word> m_othersCommon;
-        std::vector<Word> m_othersUncommon;
+class Dictionnary {
+    using Ustr_t = icu::UnicodeString;
+    private:
+    struct Word {
+        icu::UnicodeString m_kanji; // Word
+        icu::UnicodeString m_hiragana; // reading
+        std::vector<std::string> m_engSense;
+        uint8_t m_jlpt;
+        Word(icu::UnicodeString kanji, icu::UnicodeString hiragana,
+                std::vector<std::string> sense, uint8_t jlpt=0) :
+            m_kanji(std::move(kanji)), m_hiragana(std::move(hiragana)),
+            m_engSense(std::move(sense)), m_jlpt(jlpt) {}
+        friend bool operator< ( const Word& lhs, const Word& rhs );
+    };
+
+    friend bool operator< ( const Word& lhs, const Word& rhs );
+    std::priority_queue<Word> m_commonQueue;
+    std::priority_queue<Word> m_uncommonQueue;
+    std::vector<Word> m_othersCommon;
+    std::vector<Word> m_othersUncommon;
 
     public:
-        void dumpInJson {return -1;}
-        void dumToStdout {return -1;}
-        void addEntry(unicodeVector_t kanji, unicodeVector_t hiragana,
-                  std::vector<std::string> sense, jlpt, bool common);
-        void addEntry(unicodeVector_t kanji, unicodeVector_t hiragana,
-                  std::vector<std::string> senses, bool common);
-}
+    void dumpInJson() {return ;}
+    void dumToOStream(std::ostream& out, char delim);
+    void addEntry(std::vector<std::pair<Ustr_t,Ustr_t>> japanese,
+                  std::vector<std::string> sense, uint8_t jlpt, bool common);
+    void addEntry(std::vector<std::pair<Ustr_t,Ustr_t>> japanese,
+                  std::vector<std::string> sense, bool common);
+};
+
