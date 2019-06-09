@@ -16,7 +16,7 @@ void JsonHandler::parse(std::string jsonString)
     const Value& data = document["data"];
     std::vector<std::pair<icu::UnicodeString,icu::UnicodeString>> kanji; // word ,reading
     std::vector<std::string> engSense;
-    std::vector<int> jlpt;
+    std::vector<uint8_t> jlpt;
     Dictionnary dict;
     for (const auto& it_data : data.GetArray()) {
         for(const auto& it_japanese : it_data["japanese"].GetArray()) {
@@ -37,10 +37,10 @@ void JsonHandler::parse(std::string jsonString)
         bool common {it_data["is_common"].GetBool()};
         // push a word in Dictionnary
         //
-        dict.addEntry(kanji,engSense,jlpt[0],common);
+        dict.addEntry(kanji,engSense,jlpt,common);
         kanji.clear();
         engSense.clear();
         jlpt.clear();
     }
-    dict.dumToOStream(std::cout,';');
+    dict.dumpToOStream(std::cout,';');
 }
