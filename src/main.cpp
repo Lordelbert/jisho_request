@@ -1,21 +1,24 @@
+#include "Dictionnary.hpp"
 #include "JishoRequester.hpp"
 #include "jsonHandler.hpp"
-#include <string>
-#include <locale>
 #include <iostream>
+#include <locale>
+#include <string>
 #include <unistr.h>
-#include <utility>
 #include <ustream.h>
+#include <utility>
 
-int main () {
-    JishoRequester jr;
-    JsonHandler jh;
-    icu::UnicodeString test;
-    std::cout<<"type the kanji string to search" << '\n';
-    std::cin >> test;
-
-    std::string jsonString{jr(std::move(test))};
-    //std::cout << jsonString;
-    jh.parse(jsonString);
-    return 0;
+int main()
+{
+	JishoRequester jr;
+	JsonHandler jh;
+	icu::UnicodeString test;
+	std::cout << "type the kanji string to search" << '\n';
+	std::cin >> test;
+	std::string jsonString{jr(std::move(test))};
+	Dictionnary dict(jh.parse(jsonString));
+	dict.sort();
+	dict.filter({"見", "火"});
+	dict.dumpToOStream(std::cout, ';');
+	return 0;
 }

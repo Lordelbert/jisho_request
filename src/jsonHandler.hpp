@@ -1,9 +1,9 @@
 #pragma once
-#include <string>
+#include "Dictionnary.hpp"
 #include <array>
+#include <string>
 
 class JsonHandler {
-    public:
-        void parse(std::string jsonString);
+  public:
+	Dictionnary parse(std::string jsonString);
 };
-
