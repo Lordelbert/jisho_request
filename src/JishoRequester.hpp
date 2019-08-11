@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Dictionnary.hpp"
 #include <curl/curl.h>
 #include <iostream>
 #include <string>
@@ -7,10 +7,6 @@
 /**
  * This class is used as a proxy between
  * curl and our program.
- *
- * For a first version we only consider
- * single threaded thus we use 'easy' interface
- * of curl.
  *
  * TODO: go multithread ?
  *
@@ -20,7 +16,6 @@ class JishoRequester {
   private:
 	// curl easy handler
 	CURL *m_curl;
-
   public:
 	// RAII compliant
 	JishoRequester(void)
@@ -39,9 +34,7 @@ class JishoRequester {
 		curl_easy_cleanup(m_curl);
 		curl_global_cleanup();
 	}
-
-	std::string operator()(icu::UnicodeString kanji);
-
+	Dictionnary operator()(icu::UnicodeString kanji);
   private:
 	static size_t write_data(void *contents, size_t size, size_t nmemb, void *userp)
 	{
@@ -52,7 +45,6 @@ class JishoRequester {
 			return 0;
 		}
 		catch(const std::bad_alloc &e) {
-
 			return 0;
 		}
 		return size * nmemb;

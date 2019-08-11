@@ -51,7 +51,24 @@ class Dictionnary {
 	}
 
   public:
-	void dumpToOStream(std::ostream &out, char delim);
+	// utility
+	bool isEmpty(void) {return m_commonQueue.empty() && m_uncommonQueue.empty();}
+	void addEntry(std::vector<std::pair<Ustr_t, Ustr_t>> japanese,
+	              std::vector<std::string> sense, std::vector<uint8_t> jlpt,
+	              bool common = 0);
+	auto commonBegin(void) { return m_commonQueue.cbegin();}
+	auto uncommonBegin(void) { return m_uncommonQueue.cbegin();}
+	auto commonEnd(void) { return m_commonQueue.cend();}
+	auto uncommonEnd(void) { return m_uncommonQueue.cend();}
+	void append(Dictionnary ap) {
+		m_commonQueue.reserve(m_commonQueue.size() + std::distance(ap.commonBegin(),ap.commonEnd()));
+		m_uncommonQueue.reserve(m_commonQueue.size() + std::distance(ap.commonBegin(),ap.commonEnd()));
+		m_commonQueue.insert(m_commonQueue.end(), ap.commonBegin(), ap.commonEnd());
+		m_uncommonQueue.insert(m_uncommonQueue.end(), ap.uncommonBegin(), ap.uncommonEnd());
+	}
+	//------------------------------------------------------------------------------------------
+	//filtering and sorting
+	void filter(std::vector<Ustr_t>);
 	template <typename Comparator = std::less<>> void filter(int jlpt)
 	{
 		m_commonQueue.erase(std::remove_if(m_commonQueue.begin(), m_commonQueue.end(),
@@ -60,12 +77,11 @@ class Dictionnary {
 		                                   }),
 		                    m_commonQueue.end());
 	}
-	void filter(std::vector<Ustr_t>);
 	template <typename Compare = std::greater_equal<>> void sort(void)
 	{
 		std::stable_sort(m_commonQueue.begin(), m_commonQueue.end(), Compare());
 	}
-	void addEntry(std::vector<std::pair<Ustr_t, Ustr_t>> japanese,
-	              std::vector<std::string> sense, std::vector<uint8_t> jlpt,
-	              bool common = 0);
+	//------------------------------------------------------------------------------------------
+	//Dump
+	void dumpToOStream(std::ostream &out, char delim);
 };
