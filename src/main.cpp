@@ -2,6 +2,7 @@
 #include "JishoRequester.hpp"
 #include "jsonHandler.hpp"
 #include <iostream>
+#include <fstream>
 #include <locale>
 #include <string>
 #include <unistr.h>
@@ -19,6 +20,7 @@ int main()
 	Dictionnary dict(jh.parse(jsonString));
 	dict.sort();
 	dict.filter({"見", "火"});
+	//std::ofstream file("./toto");
 	dict.dumpToOStream(std::cout, ';');
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "Dictionnary.hpp"
 #include <ostream>
 #include <ustream.h>
+#include <unicode/regex.h>
 
 bool operator<(const Dictionnary::Word &lhs, const Dictionnary::Word &rhs)
 {
@@ -52,19 +53,21 @@ void Dictionnary::dumpToOStream(std::ostream &out, char delim)
 }
 void Dictionnary::filterUtility(std::vector<Word> &queue, std::vector<Ustr_t> kanjiList)
 {
-	for(auto it = queue.begin(); it != queue.end();) {
-		bool find = false;
-		for(const auto kanjiList_it : kanjiList) {
-			if(((*it).m_kanji.indexOf(kanjiList_it) != -1)) {
-				find = true;
-				break;
-			}
-		}
-		if(find)
-			++it;
-		else
-			it = queue.erase(it);
+	std::vector<Word> FilterQueue;
+	FilterQueue.reserve(queue.size());
+	Ustr_t regexString = "[";
+	for(const auto it : kanjiList)
+		regexString+= it+"|";
+	regexString.replaceBetween(regexString.length()-1,regexString.length() ,"]");
+	UErrorCode status = U_ZERO_ERROR;
+	icu::RegexMatcher matcher{regexString,0,status};
+
+	for(const auto it : queue) {
+		matcher.reset(it.m_kanji);
+		if(matcher.find())
+			FilterQueue.emplace_back(it);
 	}
+	queue = std::move(FilterQueue);
 	return;
 }
 void Dictionnary::filter(std::vector<Ustr_t> kanjiList)
