@@ -10,6 +10,7 @@
 #include <unistr.h>
 #include <utility>
 #include <vector>
+#include <unicode/regex.h>
 
 class Dictionnary {
 	using Ustr_t = icu::UnicodeString;
@@ -33,8 +34,7 @@ class Dictionnary {
 	friend bool operator<(const Dictionnary::Word &lhs, int jlpt);
 	std::vector<Word> m_commonQueue;
 	std::vector<Word> m_uncommonQueue;
-
-	void filterUtility(std::vector<Word> &, std::vector<Ustr_t>);
+	void filterUtility(std::vector<Word> &, icu::RegexMatcher&);
 	// the enable_if is superfluous this template function is private so
 	// we know the context
 	// It is here for learning purpose and prevent error if we change container
@@ -63,8 +63,8 @@ class Dictionnary {
 	void append(Dictionnary ap) {
 		m_commonQueue.reserve(m_commonQueue.size() + std::distance(ap.commonBegin(),ap.commonEnd()));
 		m_uncommonQueue.reserve(m_commonQueue.size() + std::distance(ap.commonBegin(),ap.commonEnd()));
-		m_commonQueue.insert(m_commonQueue.end(), ap.commonBegin(), ap.commonEnd());
-		m_uncommonQueue.insert(m_uncommonQueue.end(), ap.uncommonBegin(), ap.uncommonEnd());
+		m_commonQueue.insert(m_commonQueue.end(), std::make_move_iterator(ap.commonBegin()), std::make_move_iterator(ap.commonEnd()));
+		m_uncommonQueue.insert(m_uncommonQueue.end(), std::make_move_iterator(ap.uncommonBegin()), std::make_move_iterator(ap.uncommonEnd()));
 	}
 	//------------------------------------------------------------------------------------------
 	//filtering and sorting

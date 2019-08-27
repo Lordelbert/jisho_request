@@ -16,9 +16,7 @@ Dictionnary JishoRequester::operator()(icu::UnicodeString kanji)
 	std::shared_ptr<char>request ((char *)calloc(std::strlen(fmtRequest) + std::strlen(fmt.get()) + 3, sizeof(char)),free);
 	for(int i= 1; !empty;++i) {
 		sprintf(request.get(), fmtRequest, fmt.get(), i);
-		std::cout<<request<<'\n';
 		curl_easy_setopt(m_curl, CURLOPT_URL, request.get());
-
 		// what to do with data
 		curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, write_data);
 		// where to store

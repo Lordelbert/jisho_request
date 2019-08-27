@@ -17,7 +17,7 @@ int main()
 	std::cin >> test;
 	Dictionnary dict(jr(std::move(test)));
 	dict.sort();
-	//dict.filter({"見", "火"});
+	dict.filter({"見", "火"});
 	//std::ofstream file("./toto");
 	dict.dumpToOStream(std::cout, ';');
 	return 0;

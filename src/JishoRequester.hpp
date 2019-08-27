@@ -8,8 +8,6 @@
  * This class is used as a proxy between
  * curl and our program.
  *
- * TODO: go multithread ?
- *
  **/
 
 class JishoRequester {
