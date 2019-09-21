@@ -12,12 +12,10 @@
 int main()
 {
 	JishoRequester jr;
-	JsonHandler jh;
 	icu::UnicodeString test;
 	std::cout << "type the kanji string to search" << '\n';
 	std::cin >> test;
-	std::string jsonString{jr(std::move(test))};
-	Dictionnary dict(jh.parse(jsonString));
+	Dictionnary dict(jr(std::move(test)));
 	dict.sort();
 	dict.filter({"見", "火"});
 	//std::ofstream file("./toto");
